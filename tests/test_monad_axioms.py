@@ -1,10 +1,8 @@
 import pytest
 
-from mir import protology
-
-from mir.monads import monads
-from mir.monads.monads import compose
-from mir.monads.monads import unit
+import mir.monads.base as monads
+from mir.monads.base import compose
+from mir.monads.base import unit
 
 
 @pytest.mark.parametrize('g,a,mtype', [
