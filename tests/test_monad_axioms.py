@@ -16,7 +16,7 @@ import pytest
 
 from mir.monads.base import compose
 from mir.monads.id import monadic
-from mir.monads.id import mreturn
+from mir.monads.id import unit
 
 
 @monadic
@@ -35,7 +35,7 @@ def power_three(a):
 
 
 @pytest.mark.parametrize('unit,g,a', [
-    (mreturn, add_one, 1),
+    (unit, add_one, 1),
 ])
 def test_left_identity(unit, g, a):
     """return >=> g ≡ g"""
@@ -43,7 +43,7 @@ def test_left_identity(unit, g, a):
 
 
 @pytest.mark.parametrize('f,unit,a', [
-    (add_one, mreturn, 1),
+    (add_one, unit, 1),
 ])
 def test_right_identity(f, unit, a):
     """f >=> return ≡ f"""
@@ -60,7 +60,7 @@ def test_associativity(f, g, h, a):
 
 
 @pytest.mark.parametrize('unit,f,a', [
-    (mreturn, add_one, 1),
+    (unit, add_one, 1),
 ])
 def test_bind_left_identity(unit, f, a):
     """return a >>= f ≡ f a"""
@@ -68,7 +68,7 @@ def test_bind_left_identity(unit, f, a):
 
 
 @pytest.mark.parametrize('m,unit', [
-    (mreturn(1), mreturn),
+    (unit(1), unit),
 ])
 def test_bind_right_identity(m, unit):
     """m >>= return ≡ m"""
@@ -76,7 +76,7 @@ def test_bind_right_identity(m, unit):
 
 
 @pytest.mark.parametrize('m,f,g', [
-    (mreturn(1), add_one, times_two),
+    (unit(1), add_one, times_two),
 ])
 def test_bind_associativity(m, f, g):
     r"""(m >>= f) >>= g ≡ m >>= (\x -> f x >>= g)"""

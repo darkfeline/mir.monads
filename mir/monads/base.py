@@ -57,7 +57,8 @@ class NullaryMonad(Monad):
             return NotImplemented
 
     def bind(self, f):
-        return f(None)
+        del f
+        return self
 
 
 class compose:

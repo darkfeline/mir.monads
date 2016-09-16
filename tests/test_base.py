@@ -12,12 +12,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from mir.monads.id import mreturn
+from mir.monads.id import unit
 
 
 def test_then():
-    assert mreturn(1).then(2) == 2
+    assert unit(1).then(2) == 2
 
 
 def test_eq():
-    assert mreturn(1) != 1
+    assert unit(1) != 1

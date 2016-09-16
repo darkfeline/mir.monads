@@ -31,7 +31,10 @@ class Nothing(NullaryMonad, Maybe): pass
 def monadic(f):
     @functools.wraps(f)
     def wrapped(a):
-        b = f(a)
+        try:
+            b = f(a)
+        except Exception:
+            b = None
         if b is None:
             return Nothing()
         else:
@@ -40,5 +43,5 @@ def monadic(f):
 
 
 @monadic
-def mreturn(a):
+def unit(a):
     return a

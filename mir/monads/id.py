@@ -28,5 +28,5 @@ def monadic(f):
 
 
 @monadic
-def mreturn(a):
+def unit(a):
     return a
