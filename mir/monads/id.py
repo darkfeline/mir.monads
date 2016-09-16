@@ -12,12 +12,21 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from mir.monads.id import mreturn
+import functools
+
+from mir.monads.base import UnaryMonad
 
 
-def test_then():
-    assert mreturn(1).then(2) == 2
+class Identity(UnaryMonad): pass
 
 
-def test_eq():
-    assert mreturn(1) != 1
+def monadic(f):
+    @functools.wraps(f)
+    def wrapped(a):
+        return Identity(f(a))
+    return wrapped
+
+
+@monadic
+def mreturn(a):
+    return a

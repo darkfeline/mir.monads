@@ -17,11 +17,6 @@ import abc
 
 class Monad(abc.ABC):
 
-    @classmethod
-    @abc.abstractmethod
-    def unit(cls, a):
-        raise NotImplementedError
-
     @abc.abstractmethod
     def bind(self, f):
         """Haskell: >>="""
@@ -29,12 +24,40 @@ class Monad(abc.ABC):
 
     def then(self, k):
         """Haskell: >>"""
-        return self.bind(lambda _, mtype: k)
+        return self.bind(lambda _: k)
 
 
-def unit(a, mtype):
-    """Haskell: return"""
-    return mtype.unit(a)
+class UnaryMonad(Monad):
+
+    def __init__(self, value):
+        self._value = value
+
+    def __repr__(self):
+        return '{}({!r})'.format(type(self).__qualname__, self._value)
+
+    def __eq__(self, other):
+        if isinstance(other, type(self)):
+            return self._value == other._value
+        else:
+            return NotImplemented
+
+    def bind(self, f):
+        return f(self._value)
+
+
+class NullaryMonad(Monad):
+
+    def __repr__(self):
+        return '{}()'.format(type(self).__qualname__)
+
+    def __eq__(self, other):
+        if isinstance(other, type(self)):
+            return True
+        else:
+            return NotImplemented
+
+    def bind(self, f):
+        return f(None)
 
 
 class compose:
@@ -49,27 +72,5 @@ class compose:
         return '{cls}({this.f!r}, {this.g!r})'.format(
             cls=type(self).__qualname__, this=self)
 
-    def __call__(self, a, mtype):
-        return unit(a, mtype).bind(self.f).bind(self.g)
-
-
-class Identity(Monad):
-
-    def __init__(self, value):
-        self.value = value
-
-    def __repr__(self):
-        return '{}({!r})'.format(type(self).__qualname__, self.value)
-
-    def __eq__(self, other):
-        if isinstance(other, type(self)):
-            return self.value == other.value
-        else:
-            return NotImplemented
-
-    @classmethod
-    def unit(cls, a):
-        return cls(a)
-
-    def bind(self, f):
-        return f(self.value, type(self))
+    def __call__(self, a):
+        return self.f(a).bind(self.g)

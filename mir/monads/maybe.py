@@ -12,12 +12,33 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from mir.monads.id import mreturn
+import functools
+
+from mir.monads.base import Monad
+from mir.monads.base import NullaryMonad
+from mir.monads.base import UnaryMonad
 
 
-def test_then():
-    assert mreturn(1).then(2) == 2
+class Maybe(Monad): pass
 
 
-def test_eq():
-    assert mreturn(1) != 1
+class Just(UnaryMonad, Maybe): pass
+
+
+class Nothing(NullaryMonad, Maybe): pass
+
+
+def monadic(f):
+    @functools.wraps(f)
+    def wrapped(a):
+        b = f(a)
+        if b is None:
+            return Nothing()
+        else:
+            return Just(b)
+    return wrapped
+
+
+@monadic
+def mreturn(a):
+    return a
