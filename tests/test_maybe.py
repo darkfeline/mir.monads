@@ -12,16 +12,17 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from mir.monads import base
+from mir.monads import maybe
 
 
-def test_then():
-    assert base.UnaryMonad(1).then(2) == 2
+@maybe.monadic
+def invert(a):
+    return 1 / a
 
 
-def test_unary_eq():
-    assert base.UnaryMonad(1) != 1
+def test_bind():
+    assert maybe.unit(2).bind(invert) == maybe.unit(0.5)
 
 
-def test_nullary_eq():
-    assert base.NullaryMonad() != 1
+def test_nothing():
+    assert maybe.unit(0).bind(invert).bind(invert) == maybe.Nothing()
