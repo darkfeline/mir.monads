@@ -15,17 +15,17 @@
 import functools
 
 from mir.monads.base import Monad
-from mir.monads.base import NullaryMonad
-from mir.monads.base import UnaryMonad
+from mir.monads.base import MonadicMonad
+from mir.monads.base import NiladicMonad
 
 
 class Maybe(Monad): pass
 
 
-class Just(UnaryMonad, Maybe): pass
+class Just(MonadicMonad, Maybe): pass
 
 
-class Nothing(NullaryMonad, Maybe): pass
+class Nothing(NiladicMonad, Maybe): pass
 
 
 def monadic(f):

@@ -14,10 +14,10 @@
 
 import functools
 
-from mir.monads.base import UnaryMonad
+from mir.monads.base import MonadicMonad
 
 
-class Identity(UnaryMonad): pass
+class Identity(MonadicMonad): pass
 
 
 def monadic(f):

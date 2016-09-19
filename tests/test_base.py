@@ -16,12 +16,12 @@ from mir.monads import base
 
 
 def test_then():
-    assert base.UnaryMonad(1).then(2) == 2
+    assert base.MonadicMonad(1).then(2) == 2
 
 
 def test_unary_eq():
-    assert base.UnaryMonad(1) != 1
+    assert base.MonadicMonad(1) != 1
 
 
 def test_nullary_eq():
-    assert base.NullaryMonad() != 1
+    assert base.NiladicMonad() != 1

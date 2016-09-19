@@ -27,7 +27,7 @@ class Monad(abc.ABC):
         return self.bind(lambda _: k)
 
 
-class UnaryMonad(Monad):
+class MonadicMonad(Monad):
 
     def __init__(self, value):
         self._value = value
@@ -45,7 +45,7 @@ class UnaryMonad(Monad):
         return f(self._value)
 
 
-class NullaryMonad(Monad):
+class NiladicMonad(Monad):
 
     def __repr__(self):
         return '{}()'.format(type(self).__qualname__)
