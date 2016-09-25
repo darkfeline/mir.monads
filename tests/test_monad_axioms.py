@@ -12,9 +12,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+"""Test that monads satisfy the monad axioms."""
+
 import pytest
 
-from mir.monads.abc import kleisli_compose
 import mir.monads.maybe as maybe
 
 

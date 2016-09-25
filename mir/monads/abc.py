@@ -15,7 +15,6 @@
 """Abstract base classes for mir.monads package."""
 
 import abc
-import inspect
 
 import mir.monads.fun as fun
 
@@ -27,7 +26,7 @@ class Functor(abc.ABC):
     class Functor f where
         fmap :: (a -> b) -> f a -> f b
 
-    As a method, the argument order of fmap() is flipped.
+    The argument order of fmap() is flipped from Haskell as it is now a method.
     """
 
     @abc.abstractmethod

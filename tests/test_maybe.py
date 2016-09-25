@@ -12,7 +12,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from mir.monads import maybe
+"""Tests for Maybe Monad."""
+
+import mir.monads.maybe as maybe
 
 
 @maybe.monadic
