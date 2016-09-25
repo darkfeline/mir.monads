@@ -53,7 +53,7 @@ class Constructor(abc.ABCMeta):
             else:
                 return False
 
-        bases = (tuple,)
+        bases += (tuple,)
         return super(Constructor, meta).__new__(meta, name, bases, dct)
 
 

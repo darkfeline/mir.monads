@@ -83,4 +83,4 @@ def kleisli_compose(f: Monad, g: Monad, h):
 
     Denoted >=> in Haskell.
     """
-    return f(h).bind(g)
+    return f(h) >> g
