@@ -26,5 +26,21 @@ def test_bind():
     assert maybe.Just(2) >> invert == maybe.Just(0.5)
 
 
-def test_nothing():
+def test_bind_nothing():
     assert maybe.Just(0) >> invert >> invert == maybe.Nothing()
+
+
+def test_fmap_just():
+    assert maybe.Just(1).fmap(lambda x: x + 1) == maybe.Just(2)
+
+
+def test_apply_just():
+    assert maybe.Just(lambda x: x + 1).apply(maybe.Just(1)) == maybe.Just(2)
+
+
+def test_fmap_nothing():
+    assert maybe.Nothing().fmap(lambda x: x + 1) == maybe.Nothing() # pragma: no cover
+
+
+def test_apply_nothing():
+    assert maybe.Nothing().apply(maybe.Just(1)) == maybe.Nothing()

@@ -12,6 +12,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+"""Maybe monad.
+
+Useful for replacing the awful None type in Python.
+"""
+
 import functools
 
 import mir.monads.abc as monads_abc
@@ -19,12 +24,12 @@ import mir.monads.data as data
 
 
 class Maybe(monads_abc.Monad):
-    """Maybe Monad supertype"""
+    """Maybe monad supertype"""
 
 
 class Just(Maybe, metaclass=data.Constructor):
 
-    """Just Monad"""
+    """Just monad"""
 
     arity = 1
 
@@ -43,7 +48,7 @@ class Just(Maybe, metaclass=data.Constructor):
 
 class Nothing(Maybe, metaclass=data.Constructor):
 
-    """Nothing Monad"""
+    """Nothing monad"""
 
     arity = 0
 
