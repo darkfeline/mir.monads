@@ -37,6 +37,12 @@ def test_calling_curried_function():
     assert got == 1
 
 
+def test_mul_composition():
+    f = fun.curry(lambda a: a + 1)
+    g = fun.curry(lambda a: a * 2)
+    assert (f * g)(1) == 3
+
+
 @pytest.mark.parametrize(
     'f,args,expected', [
         (lambda: 1, (), True),
