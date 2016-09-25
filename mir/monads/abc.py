@@ -77,66 +77,6 @@ class Monad(Applicative):
         return self.bind(f)
 
 
-class curry:
-
-    """Decorator to enable currying for a function.
-
-    Calling a curry-able function will either return a partial function or call
-    the function and return its result.  The function will only be called if it
-    has no unbound parameters.
-
-    Currying a function with keyword-only parameters is an error.
-
-    Parameters with default values are required to be bound when currying.
-    """
-
-    def __init__(self, func, args=()):
-        self.func = func
-        self.args = args
-
-    def __repr__(self):
-       return '{cls}({this.func!r}, {this.args!r})'.format(
-           cls=type(self).__qualname__,
-           this=self)
-
-    def __call__(self, *args):
-        func = self.func
-        new_args = self.args + args
-        if _is_fully_bound(func, new_args):
-            return func(*new_args)
-        else:
-            return curry(self.func, new_args)
-
-    def __mul__(self, other):
-        return composition(self, other)
-
-
-def _is_fully_bound(f, args):
-    """Return True if the given arguments bind all of the function's parameters."""
-    sig = inspect.signature(f)
-    bound_args = sig.bind_partial(*args)
-    return len(sig.parameters) == len(bound_args.arguments)
-
-
-class composition:
-
-    """Composed functions"""
-
-    def __init__(self, a, b):
-        assert callable(a), 'Cannot compose non-callable %r' % (a,)
-        assert callable(b), 'Cannot compose non-callable %r' % (b,)
-        self._a = a
-        self._b = b
-
-    def __repr__(self):
-        return '{cls}({this._a!r}, {this._b!r})'.format(
-            cls=type(self).__qualname__,
-            this=self)
-
-    def __call__(self, *args, **kwargs):
-        return self._a(self._b(*args, **kwargs))
-
-
 @fun.curry
 def kleisli_compose(f: Monad, g: Monad, h):
     """Kleisli composition operator

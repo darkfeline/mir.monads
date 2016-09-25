@@ -12,24 +12,38 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-"""Tests for curry decorator."""
+"""Tests for mir.monads.fun module."""
 
-from mir.monads.abc import curry
+import pytest
+
+import mir.monads.fun as fun
 
 
 def test_currying_when_unbound_params():
-    function = curry(lambda a, b: 1)
+    function = fun.curry(lambda a, b: 1)
     got = function(1)
     assert callable(got)
 
 
 def test_calling_when_no_params():
-    function = curry(lambda a: 1)
+    function = fun.curry(lambda a: 1)
     got = function(1)
     assert got == 1
 
 
 def test_calling_curried_function():
-    function = curry(lambda a, b: 1)
+    function = fun.curry(lambda a, b: 1)
     got = function(1)(2)
     assert got == 1
+
+
+@pytest.mark.parametrize(
+    'f,args,expected', [
+        (lambda: 1, (), True),
+        (lambda a: 1, (), False),
+        (lambda a: 1, (1,), True),
+        (lambda a, b: 1, (1,), False),
+    ])
+def test__is_fully_bound(f, args, expected):
+    got = fun._is_fully_bound(f, args)
+    assert bool(got) == expected
