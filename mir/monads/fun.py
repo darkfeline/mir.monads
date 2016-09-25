@@ -12,69 +12,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-"""Abstract base classes for mir.monads package."""
+"""Functional programming goodies."""
 
-import abc
 import inspect
-
-import mir.monads.fun as fun
-
-
-class Functor(abc.ABC):
-
-    """Functor supertype
-
-    class Functor f where
-        fmap :: (a -> b) -> f a -> f b
-
-    As a method, the argument order of fmap() is flipped.
-    """
-
-    @abc.abstractmethod
-    def fmap(self, f):
-        """Map a function over the functor."""
-        raise NotImplementedError
-
-
-class Applicative(Functor):
-
-    """Applicative supertype
-
-    class (Functor f) => Applicative f where
-        pure :: a -> f a
-        (<*>) :: f (a -> b) -> f a -> f b
-
-    Implemented methods:
-    apply -- (<*>)
-    """
-
-    @abc.abstractmethod
-    def apply(self, other):
-        """Apply the applicative to another applicative."""
-        raise NotImplementedError
-
-
-class Monad(Applicative):
-
-    """Monad supertype
-
-    class Monad m where
-        (>>=) :: m a -> (a -> m b) -> m b
-        (>>) :: m a -> m b -> m b
-        return :: a -> m a
-        fail :: String -> m a
-
-    Implemented methods:
-    bind -- (>>=)
-    """
-
-    @abc.abstractmethod
-    def bind(self, f):
-        """Apply a function to the monad."""
-        raise NotImplementedError
-
-    def __rshift__(self, f):
-        return self.bind(f)
 
 
 class curry:
@@ -87,25 +27,25 @@ class curry:
 
     Currying a function with keyword-only parameters is an error.
 
-    Parameters with default values are required to be bound when currying.
+    Default parameter values are effectively ignored.
     """
 
     def __init__(self, func, args=()):
-        self.func = func
-        self.args = args
+        self._func = func
+        self._args = args
 
     def __repr__(self):
-       return '{cls}({this.func!r}, {this.args!r})'.format(
+       return '{cls}({this._func!r}, {this._args!r})'.format(
            cls=type(self).__qualname__,
            this=self)
 
     def __call__(self, *args):
-        func = self.func
-        new_args = self.args + args
+        func = self._func
+        new_args = self._args + args
         if _is_fully_bound(func, new_args):
             return func(*new_args)
         else:
-            return curry(self.func, new_args)
+            return curry(self._func, new_args)
 
     def __mul__(self, other):
         return composition(self, other)
@@ -120,7 +60,7 @@ def _is_fully_bound(f, args):
 
 class composition:
 
-    """Composed functions"""
+    """Function composition."""
 
     def __init__(self, a, b):
         assert callable(a), 'Cannot compose non-callable %r' % (a,)
@@ -135,12 +75,3 @@ class composition:
 
     def __call__(self, *args, **kwargs):
         return self._a(self._b(*args, **kwargs))
-
-
-@fun.curry
-def kleisli_compose(f: Monad, g: Monad, h):
-    """Kleisli composition operator
-
-    Denoted >=> in Haskell.
-    """
-    return f(h).bind(g)

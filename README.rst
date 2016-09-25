@@ -6,4 +6,4 @@ mir.monads
 .. image:: https://codecov.io/gh/darkfeline/mir.monads/branch/master/graph/badge.svg
    :target: https://codecov.io/gh/darkfeline/mir.monads
 
-Monads in Python (and other functional goodies).
+Monads for Python (and other functional goodies).

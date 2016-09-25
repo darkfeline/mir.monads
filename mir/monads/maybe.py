@@ -15,13 +15,14 @@
 import functools
 
 import mir.monads.abc as monads_abc
+import mir.monads.data as data
 
 
 class Maybe(monads_abc.Monad):
     """Maybe Monad supertype"""
 
 
-class Just(Maybe, metaclass=monads_abc.DataConstructor):
+class Just(Maybe, metaclass=data.Constructor):
 
     """Just Monad"""
 
@@ -40,7 +41,7 @@ class Just(Maybe, metaclass=monads_abc.DataConstructor):
         return f(value)
 
 
-class Nothing(Maybe, metaclass=monads_abc.DataConstructor):
+class Nothing(Maybe, metaclass=data.Constructor):
 
     """Nothing Monad"""
 
