@@ -12,21 +12,20 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import functools
+"""Tests for _is_fully_bound."""
 
-from mir.monads.base import MonadicMonad
+import pytest
 
-
-class Identity(MonadicMonad): pass
-
-
-def monadic(f):
-    @functools.wraps(f)
-    def wrapped(a):
-        return Identity(f(a))
-    return wrapped
+from mir.monads.abc import _is_fully_bound
 
 
-@monadic
-def unit(a):
-    return a
+@pytest.mark.parametrize(
+    'f,args,expected', [
+        (lambda: 1, (), True),
+        (lambda a: 1, (), False),
+        (lambda a: 1, (1,), True),
+        (lambda a, b: 1, (1,), False),
+    ])
+def test__is_fully_bound(f, args, expected):
+    got = _is_fully_bound(f, args)
+    assert bool(got) == expected

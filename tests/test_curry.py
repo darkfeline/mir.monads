@@ -12,16 +12,24 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from mir.monads import base
+"""Tests for curry decorator."""
+
+from mir.monads.abc import curry
 
 
-def test_then():
-    assert base.MonadicMonad(1).then(2) == 2
+def test_currying_when_unbound_params():
+    function = curry(lambda a, b: 1)
+    got = function(1)
+    assert callable(got)
 
 
-def test_unary_eq():
-    assert base.MonadicMonad(1) != 1
+def test_calling_when_no_params():
+    function = curry(lambda a: 1)
+    got = function(1)
+    assert got == 1
 
 
-def test_nullary_eq():
-    assert base.NiladicMonad() != 1
+def test_calling_curried_function():
+    function = curry(lambda a, b: 1)
+    got = function(1)(2)
+    assert got == 1

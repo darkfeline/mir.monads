@@ -15,6 +15,7 @@
 """Abstract base classes for mir.monads package."""
 
 import abc
+import inspect
 
 
 class DataConstructor(abc.ABCMeta):
@@ -22,22 +23,34 @@ class DataConstructor(abc.ABCMeta):
     """Metaclass for Haskell-like data constructors.
 
     Classes must define an arity class attribute.
+
+    Very roughly speaking, equivalent to Haskell's:
+
+        data SomeType a = SomeValue a
+
+    Note that the hypothetical type cunstructor may take more arguments than
+    the data constructor:
+
+        data SomeType a = SomeValue
+        data SomeType a b = SomeValue
+        data SomeType a b = SomeValue a
+        data SomeType a b c = SomeValue a
     """
 
     def __new__(meta, name, bases, dct):
-        arity = int(dct.pop('arity', 0))
+        arity = int(dct.pop('arity'))
         dict_method = _dict_method(dct)
 
         @dict_method
-        def __new__(cls, *args):
-            if len(args) != arity:
+        def __new__(cls, *values):
+            if len(values) != arity:
                 raise TypeError('__new__() takes %d arguments' % (arity,))
-            return cls(*args)
+            return tuple.__new__(cls, values)
 
         @dict_method
         def __eq__(self, other):
             if isinstance(other, type(self)):
-                return super().__eq__(other)
+                return super(type(self), self).__eq__(other)
             else:
                 return False
 
@@ -46,25 +59,14 @@ class DataConstructor(abc.ABCMeta):
 
 
 def _dict_method(dct):
-    """Decorator for adding methods to dicts."""
+    """Decorator for adding methods to a dict."""
     def decorator(f):
         dct[f.__name__] = f
         return f
     return decorator
 
 
-class UnaryConstructor(metaclass=DataConstructor):
-    """Unary data constructor.
-
-    Very roughly speaking, equivalent to Haskell's:
-
-    data SomeType a = UnaryConstructor a
-
-    """
-    arity = 1
-
-
-class Functor(UnaryConstructor):
+class Functor(abc.ABC):
 
     """Functor supertype
 
@@ -89,11 +91,11 @@ class Applicative(Functor):
         (<*>) :: f (a -> b) -> f a -> f b
 
     Implemented methods:
-    amap -- (<*>)
+    apply -- (<*>)
     """
 
     @abc.abstractmethod
-    def amap(self, other):
+    def apply(self, other):
         """Apply the applicative to another applicative."""
         raise NotImplementedError
 
@@ -121,15 +123,70 @@ class Monad(Applicative):
         return self.bind(f)
 
 
-class Monoid(UnaryConstructor):
+class curry:
 
-    """Monoid supertype"""
+    """Decorator to enable currying for a function.
 
-    @classmethod
-    @abc.abstractmethod
-    def identity(cls):
-        """Return the identity element for the monoid."""
-        raise NotImplementedError
+    Calling a curry-able function will either return a partial function or call
+    the function and return its result.  The function will only be called if it
+    has no unbound parameters.
+
+    Currying a function with keyword-only parameters is an error.
+
+    Parameters with default values are required to be bound when currying.
+    """
+
+    def __init__(self, func, args=()):
+        self.func = func
+        self.args = args
+
+    def __repr__(self):
+       return '{cls}({this.func!r}, {this.args!r})'.format(
+           cls=type(self).__qualname__,
+           this=self)
+
+    def __call__(self, *args):
+        func = self.func
+        new_args = self.args + args
+        if _is_fully_bound(func, new_args):
+            return func(*new_args)
+        else:
+            return curry(self.func, new_args)
 
     def __mul__(self, other):
-        return self.identity()
+        return composition(self, other)
+
+
+def _is_fully_bound(f, args):
+    """Return True if the given arguments bind all of the function's parameters."""
+    sig = inspect.signature(f)
+    bound_args = sig.bind_partial(*args)
+    return len(sig.parameters) == len(bound_args.arguments)
+
+
+class composition:
+
+    """Composed functions"""
+
+    def __init__(self, a, b):
+        assert callable(a), 'Cannot compose non-callable %r' % (a,)
+        assert callable(b), 'Cannot compose non-callable %r' % (b,)
+        self._a = a
+        self._b = b
+
+    def __repr__(self):
+        return '{cls}({this._a!r}, {this._b!r})'.format(
+            cls=type(self).__qualname__,
+            this=self)
+
+    def __call__(self, *args, **kwargs):
+        return self._a(self._b(*args, **kwargs))
+
+
+@curry
+def kleisli_compose(f: Monad, g: Monad, h):
+    """Kleisli composition operator
+
+    Denoted >=> in Haskell.
+    """
+    return f(h).bind(g)

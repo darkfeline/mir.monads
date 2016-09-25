@@ -14,21 +14,50 @@
 
 import functools
 
-from mir.monads.base import Monad
-from mir.monads.base import MonadicMonad
-from mir.monads.base import NiladicMonad
+import mir.monads.abc as monads_abc
 
 
-class Maybe(Monad): pass
+class Maybe(monads_abc.Monad):
+    """Maybe Monad supertype"""
 
 
-class Just(MonadicMonad, Maybe): pass
+class Just(Maybe, metaclass=monads_abc.DataConstructor):
+
+    """Just Monad"""
+
+    arity = 1
+
+    def fmap(self, f):
+        value, = self
+        return Just(f(value))
+
+    def apply(self, other):
+        value, = self
+        return other.fmap(value)
+
+    def bind(self, f):
+        value, = self
+        return f(value)
 
 
-class Nothing(NiladicMonad, Maybe): pass
+class Nothing(Maybe, metaclass=monads_abc.DataConstructor):
+
+    """Nothing Monad"""
+
+    arity = 0
+
+    def fmap(self, f):
+        return Nothing()
+
+    def apply(self, other):
+        return Nothing()
+
+    def bind(self, f):
+        return Nothing()
 
 
 def monadic(f):
+    """Decorate a unary function to return a Maybe type."""
     @functools.wraps(f)
     def wrapped(a):
         try:
@@ -40,8 +69,3 @@ def monadic(f):
         else:
             return Just(b)
     return wrapped
-
-
-@monadic
-def unit(a):
-    return a

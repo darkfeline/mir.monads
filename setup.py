@@ -17,7 +17,7 @@ from setuptools import setup
 setup(
     name='mir.monads',
     version='0.1.0',
-    description='Monads in python',
+    description='Monads in Python (and other functional goodies).',
     long_description='',
     keywords='',
     url='https://github.com/darkfeline/mir.monads',

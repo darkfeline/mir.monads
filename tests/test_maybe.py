@@ -21,8 +21,8 @@ def invert(a):
 
 
 def test_bind():
-    assert maybe.unit(2).bind(invert) == maybe.unit(0.5)
+    assert maybe.Just(2).bind(invert) == maybe.Just(0.5)
 
 
 def test_nothing():
-    assert maybe.unit(0).bind(invert).bind(invert) == maybe.Nothing()
+    assert maybe.Just(0).bind(invert).bind(invert) == maybe.Nothing()

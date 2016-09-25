@@ -14,70 +14,46 @@
 
 import pytest
 
-from mir.monads.base import compose
-from mir.monads.id import monadic
-from mir.monads.id import unit
+from mir.monads.abc import kleisli_compose
+import mir.monads.maybe as maybe
 
 
-@monadic
 def add_one(a):
     return a + 1
 
 
-@monadic
 def times_two(a):
     return a * 2
 
 
-@monadic
-def power_three(a):
-    return a ** 3
-
-
-@pytest.mark.parametrize('unit,g,a', [
-    (unit, add_one, 1),
-])
-def test_left_identity(unit, g, a):
-    """return >=> g ≡ g"""
-    assert compose(unit, g)(a) == g(a)
-
-
-@pytest.mark.parametrize('f,unit,a', [
-    (add_one, unit, 1),
-])
-def test_right_identity(f, unit, a):
-    """f >=> return ≡ f"""
-    assert compose(f, unit)(a) == f(a)
-
-
-@pytest.mark.parametrize('f,g,h,a', [
-    (add_one, times_two, power_three, 1),
-])
-def test_associativity(f, g, h, a):
-    """(f >=> g) >=> h ≡ f >=> (g >=> h)"""
-    assert compose(compose(f, g), h)(a) \
-        == compose(f, compose(g, h))(a)
-
-
 @pytest.mark.parametrize('unit,f,a', [
-    (unit, add_one, 1),
+    (maybe.Just, maybe.monadic(add_one), 1),
 ])
 def test_bind_left_identity(unit, f, a):
-    """return a >>= f ≡ f a"""
+    """return a >>= f ≡ f a
+
+    return >=> g ≡ g
+    """
     assert unit(a).bind(f) == f(a)
 
 
 @pytest.mark.parametrize('m,unit', [
-    (unit(1), unit),
+    (maybe.Just(1), maybe.Just),
 ])
 def test_bind_right_identity(m, unit):
-    """m >>= return ≡ m"""
+    """m >>= return ≡ m
+
+    f >=> return ≡ f
+    """
     assert m.bind(unit) == m
 
 
 @pytest.mark.parametrize('m,f,g', [
-    (unit(1), add_one, times_two),
+    (maybe.Just(1), maybe.monadic(add_one), maybe.monadic(times_two)),
 ])
 def test_bind_associativity(m, f, g):
-    r"""(m >>= f) >>= g ≡ m >>= (\x -> f x >>= g)"""
+    r"""(m >>= f) >>= g ≡ m >>= (\x -> f x >>= g)
+
+    (f >=> g) >=> h ≡ f >=> (g >=> h)
+    """
     assert m.bind(f).bind(g) == m.bind(lambda x: f(x).bind(g))
