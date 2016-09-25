@@ -27,7 +27,7 @@ class Constructor(abc.ABCMeta):
 
         data SomeType a = SomeValue a
 
-    Note that the hypothetical type cunstructor may take more arguments than
+    Note that the hypothetical type constructor may take more arguments than
     the data constructor:
 
         data SomeType a = SomeValue
