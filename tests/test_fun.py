@@ -20,7 +20,7 @@ import mir.monads.fun as fun
 
 
 def test_currying_when_unbound_params():
-    function = fun.curry(lambda a, b: 1)  # pragma: no cover
+    function = fun.curry(lambda a, b: 1)  # pragma: no branch
     got = function(1)
     assert callable(got)
 
@@ -43,7 +43,7 @@ def test_mul_composition():
     assert (f * g)(1) == 3
 
 
-@pytest.mark.parametrize(  # pragma: no cover
+@pytest.mark.parametrize(  # pragma: no branch
     'f,args,expected', [
         (lambda: 1, (), True),
         (lambda a: 1, (), False),

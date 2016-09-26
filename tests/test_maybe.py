@@ -39,7 +39,7 @@ def test_apply_just():
 
 
 def test_fmap_nothing():
-    assert maybe.Nothing().fmap(lambda x: x + 1) == maybe.Nothing() # pragma: no cover
+    assert maybe.Nothing().fmap(lambda x: x + 1) == maybe.Nothing() # pragma: no branch
 
 
 def test_apply_nothing():
