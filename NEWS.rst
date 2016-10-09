@@ -3,8 +3,8 @@ Release notes
 
 This project uses `semantic versioning <http://semver.org/>`_.
 
-master
-------
+0.3.0
+-----
 
 Fixed
 ^^^^^
