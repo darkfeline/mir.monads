@@ -35,7 +35,14 @@ class Just(Maybe, metaclass=data.Constructor):
 
     def fmap(self, f):
         value, = self
-        return Just(f(value))
+        try:
+            new_value = f(value)
+        except Exception:
+            new_value = None
+        if new_value is None:
+            return Nothing()
+        else:
+            return Just(new_value)
 
     def apply(self, other):
         value, = self

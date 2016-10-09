@@ -34,12 +34,20 @@ def test_fmap_just():
     assert maybe.Just(1).fmap(lambda x: x + 1) == maybe.Just(2)
 
 
-def test_apply_just():
-    assert maybe.Just(lambda x: x + 1).apply(maybe.Just(1)) == maybe.Just(2)
+def test_fmap_just_none():
+    assert maybe.Just(1).fmap(lambda x: None) == maybe.Nothing()
+
+
+def test_fmap_just_exception():
+    assert maybe.Just(1).fmap(lambda x: 1 + '') == maybe.Nothing()
 
 
 def test_fmap_nothing():
     assert maybe.Nothing().fmap(lambda x: x + 1) == maybe.Nothing() # pragma: no branch
+
+
+def test_apply_just():
+    assert maybe.Just(lambda x: x + 1).apply(maybe.Just(1)) == maybe.Just(2)
 
 
 def test_apply_nothing():
