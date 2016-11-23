@@ -1,15 +1,49 @@
 mir.monads documentation
 ========================
 
-mir.monads is a simple, but rigorous implementation of monads and
-other functional concepts in Python.
+mir.monads is a simple, but rigorous implementation of monads in
+Python.
+
+Monads
+------
+
+.. module:: mir.monads.id
+
+Identity
+^^^^^^^^
+
+The identity monad is the simplest monad.  It's not particularly
+useful, especially in Python, although its :meth:`fmap` method can be
+used to emulate Clojure's threading operator.
+
+.. code-block:: python
+
+   def add_one(x):
+       return x + 1
+
+   (Identity(1)
+    .fmap(add_one)
+    .fmap(add_one)
+    .fmap(add_one)) == 4
+
+    # This is equivalent to the following
+    add_one(add_one(add_one(1))) == 4
+
+.. class:: Identity(v)
+
+   Identity instances are instances of :class:`Monad`, and so support
+   all associated methods.
+
+Defining additional monads
+--------------------------
 
 .. module:: mir.monads.abc
 
 :mod:`mir.monads.abc`
----------------------
+^^^^^^^^^^^^^^^^^^^^^
 
-This module contains abstract base classes related to monads.  These define interfaces that correspond to Haskell typeclasses.
+This module contains abstract base classes related to monads.  These
+define interfaces that correspond to Haskell typeclasses.
 
 .. class:: Functor
 
@@ -63,6 +97,28 @@ This module contains abstract base classes related to monads.  These define inte
    .. method:: bind(f)
 
       Apply the function to the monad.
+
+.. module:: mir.monads.data
+
+:mod:`mir.monads.data`
+^^^^^^^^^^^^^^^^^^^^^^
+
+This module defines a metaclass for data constructors.  Data
+constructors are like namedtuples, except that they are strictly
+typed.
+
+See the :mod:`mir.monads.maybe` module for an example of how data
+constructors are defined.
+
+.. class:: Constructor
+
+   Constructor is a metaclass for data constructors.  Instances of
+   Constructor (classes that use Constructor as a metaclass) must
+   define an :attr:`arity` class attribute.
+
+   .. attribute:: arity
+
+      The arity of the data constructor (how many arguments it takes).
 
 Indices and tables
 ==================

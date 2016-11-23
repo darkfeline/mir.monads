@@ -36,5 +36,5 @@ def test_not_eq_value():
     assert UnaryConstructor(1) != UnaryConstructor(2)
 
 
-def test_eq_tuple():
-    assert UnaryConstructor(1) == (1,)
+def test_not_eq_tuple():
+    assert UnaryConstructor(1) != (1,)

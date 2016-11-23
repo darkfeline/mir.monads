@@ -43,7 +43,7 @@ class Constructor(abc.ABCMeta):
     Values should be unpacked by assignment to distinguish data constructor
     instances from regular tuples:
 
-        value, = someValue(value)
+        value, = SomeValue(value)
     """
 
     def __new__(meta, name, bases, dct):
@@ -58,10 +58,12 @@ class Constructor(abc.ABCMeta):
 
         @dict_method
         def __eq__(self, other):
-            if isinstance(other, type(self)):
-                return super(type(self), self).__eq__(other)
-            else:
-                return NotImplemented
+            return (isinstance(other, type(self))
+                    and super(type(self), self).__eq__(other))
+
+        @dict_method
+        def __ne__(self, other):
+            return not self == other
 
         bases += (tuple,)
         return super(Constructor, meta).__new__(meta, name, bases, dct)
