@@ -78,7 +78,7 @@ class Nothing(Maybe, metaclass=data.Constructor):
 
 
 def monadic(f):
-    """Decorate a unary function to return a Maybe type."""
+    """Decorate a unary function to return a Maybe monad."""
     @functools.wraps(f)
     def wrapped(a):
         try:

@@ -1,7 +1,7 @@
 mir.monads documentation
 ========================
 
-mir.monads is a simple, but rigorous implementation of monads in
+mir.monads is a simple but rigorous implementation of monads in
 Python.
 
 Monads
@@ -12,7 +12,7 @@ Monads
 Identity
 ^^^^^^^^
 
-The identity monad is the simplest monad.  It's not particularly
+The Identity monad is the simplest monad.  It's not particularly
 useful, especially in Python, although its :meth:`fmap` method can be
 used to emulate Clojure's threading operator.
 
@@ -31,11 +31,92 @@ used to emulate Clojure's threading operator.
 
 .. class:: Identity(v)
 
-   Identity instances are instances of :class:`Monad`, and so support
-   all associated methods.
+   Identity instances are instances of :class:`mir.monads.abc.Monad`,
+   and so support all associated methods.
 
-Defining additional monads
---------------------------
+   .. method:: fmap(f)
+
+      Return the value of ``Identity(f(v))``.
+
+   .. method:: apply(other)
+
+      Return the value of ``other.fmap(v)``.
+
+   .. method:: bind(f)
+
+      Return the value of ``f(v)``.
+
+.. module:: mir.monads.maybe
+
+Maybe
+^^^^^
+
+The Maybe monad represents computations that may be missing a value.
+Maybe monads can be used to replace ``None`` in Python, removing an
+entire class of bugs, or for streamlined exception handling.
+
+Example:
+
+.. code-block:: python
+
+   (Just('some_file')
+    .bind(open_file_or_return_none)
+    .bind(write_things_or_raise_exception))
+
+   # This is equivalent to
+   file = open_file_or_return_none('some_file')
+   if file is not None:
+       try:
+           write_things_or_raise_exception(file)
+       except Exception:
+           pass
+
+.. class:: Maybe
+
+   Abstract superclass for Maybe monads.  This class can be used for
+   type checking.
+
+.. class:: Just(v)
+
+   .. method:: fmap(f)
+
+      Return an instance of :class:`Maybe`.  `f` is called with `v`.
+      If an exception is raised or the value is ``None``, then
+      ``Nothing()`` is returned, else ``Just(value)`` is returned.
+
+   .. method:: apply(other)
+
+      Return the value of ``other.fmap(v)``.
+
+   .. method:: bind(f)
+
+      Return the value of ``f(v)``.
+
+.. class:: Nothing
+
+   .. method:: fmap(f)
+
+      Return an instance of :class:`Nothing`.
+
+   .. method:: apply(other)
+
+      Return an instance of :class:`Nothing`.
+
+   .. method:: bind(f)
+
+      Return an instance of :class:`Nothing`.
+
+:mod:`mir.monads.maybe` also provides a decorator to make functions
+return a Maybe monad.
+
+.. function:: monadic(f)
+
+Decorate a unary function to return a Maybe monad.  The transformation
+rules for the function's return value are the same as for
+:meth:`Just.fmap`.
+
+Monad building blocks
+---------------------
 
 .. module:: mir.monads.abc
 
