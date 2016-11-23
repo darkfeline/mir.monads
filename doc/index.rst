@@ -13,15 +13,15 @@ This module contains abstract base classes related to monads.  These define inte
 
 .. class:: Functor
 
-::
+   ::
 
-   class Functor f where
-       fmap :: (a -> b) -> f a -> f b
+      class Functor f where
+          fmap :: (a -> b) -> f a -> f b
 
-Functors are things that can be mapped over.  Functors have one
-method, :meth:`fmap`.
+   Functors are things that can be mapped over.  Functors have one
+   method, :meth:`fmap`.
 
-.. method:: fmap(f)
+   .. method:: fmap(f)
 
 
 Indices and tables
