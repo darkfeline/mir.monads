@@ -26,4 +26,4 @@ def test_apply():
 
 
 def test_bind():
-    assert Identity(1) >> (lambda x: Identity(x + 1)) == Identity(2)
+    assert Identity(1).bind(lambda x: Identity(x + 1)) == Identity(2)

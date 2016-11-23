@@ -19,28 +19,22 @@ import pytest
 import mir.monads.data as data
 
 
-class NullaryConstructor(metaclass=data.Constructor):
-    arity = 0
-
-
 class UnaryConstructor(metaclass=data.Constructor):
     arity = 1
 
 
-@pytest.mark.parametrize('cls,args', [
-    (NullaryConstructor, (1,)),
-    (UnaryConstructor, ()),
-])
-def test_invalid_arguments(cls, args):
+def test_invalid_arguments():
     with pytest.raises(TypeError):
-        cls(*args)
+        UnaryConstructor()
 
 
-@pytest.mark.parametrize('a,b,expected', [
-    (UnaryConstructor(1), UnaryConstructor(1), True),
-    (UnaryConstructor(1), (1,), False),
-    (UnaryConstructor(1), UnaryConstructor(2), False),
-])
-def test_eq(a, b, expected):
-    got = a == b
-    assert got == expected
+def test_eq():
+    assert UnaryConstructor(1) == UnaryConstructor(1)
+
+
+def test_not_eq_value():
+    assert UnaryConstructor(1) != UnaryConstructor(2)
+
+
+def test_eq_tuple():
+    assert UnaryConstructor(1) == (1,)

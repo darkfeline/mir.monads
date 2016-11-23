@@ -15,6 +15,14 @@
 """Maybe monad.
 
 Useful for replacing the awful None type in Python.
+
+Functions:
+monadic -- Decorate a function to return Maybe
+
+Classes:
+Maybe -- Maybe monad supertype
+Just -- Maybe constructor
+Nothing -- Maybe constructor
 """
 
 import functools

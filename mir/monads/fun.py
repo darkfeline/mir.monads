@@ -12,12 +12,17 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-"""Functional programming goodies."""
+"""Functional programming goodies.
+
+Functions:
+curryable -- Curry-able function decorator
+compose -- Compose functions
+"""
 
 import inspect
 
 
-class curry:
+class curryable:
 
     """Decorator to enable currying for a function.
 
@@ -25,9 +30,11 @@ class curry:
     the function and return its result.  The function will only be called if it
     has no unbound parameters.
 
-    Currying a function with keyword-only parameters is an error.
+    Currying a function with any keyword-only parameters is an error.
 
-    Default parameter values are effectively ignored.
+    Default values for parameters are ignored, since there is no good way to
+    know when a function call is "complete" if it has unbound parameters with
+    default values.
     """
 
     def __init__(self, func, args=()):
@@ -35,9 +42,9 @@ class curry:
         self._args = args
 
     def __repr__(self):
-       return '{cls}({this._func!r}, {this._args!r})'.format(
-           cls=type(self).__qualname__,
-           this=self)
+        return '{cls}({this._func!r}, {this._args!r})'.format(
+            cls=type(self).__qualname__,
+            this=self)
 
     def __call__(self, *args):
         func = self._func
@@ -45,20 +52,10 @@ class curry:
         if _is_fully_bound(func, new_args):
             return func(*new_args)
         else:
-            return curry(self._func, new_args)
-
-    def __mul__(self, other):
-        return composition(self, other)
+            return curryable(self._func, new_args)
 
 
-def _is_fully_bound(f, args):
-    """Return True if the given arguments bind all of the function's parameters."""
-    sig = inspect.signature(f)
-    bound_args = sig.bind_partial(*args)
-    return len(sig.parameters) == len(bound_args.arguments)
-
-
-class composition:
+class compose:
 
     """Function composition."""
 
@@ -75,3 +72,10 @@ class composition:
 
     def __call__(self, *args, **kwargs):
         return self._a(self._b(*args, **kwargs))
+
+
+def _is_fully_bound(f, args):
+    """Return True if args binds all of the function's parameters."""
+    sig = inspect.signature(f)
+    bound_args = sig.bind_partial(*args)
+    return len(sig.parameters) == len(bound_args.arguments)

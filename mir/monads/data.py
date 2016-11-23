@@ -12,7 +12,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-"""Data constructors for Python."""
+"""Data constructors for Python.
+
+Classes:
+Constructor -- Data constructor metaclass
+"""
 
 import abc
 
@@ -23,22 +27,28 @@ class Constructor(abc.ABCMeta):
 
     Classes must define an arity class attribute.
 
+    Example:
+
+        class SomeType: pass
+        class SomeValue(SomeType, metaclass=Constructor):
+            arity = 1
+
     Very roughly speaking, equivalent to Haskell's:
 
         data SomeType a = SomeValue a
 
-    Note that the hypothetical type constructor may take more arguments than
-    the data constructor:
+    Python does not support generics or type constructors, so you cannot do
+    ``SomeType str`` or ``SomeType int`` as in Haskell.
 
-        data SomeType a = SomeValue
-        data SomeType a b = SomeValue
-        data SomeType a b = SomeValue a
-        data SomeType a b c = SomeValue a
+    Values should be unpacked by assignment to distinguish data constructor
+    instances from regular tuples:
+
+        value, = someValue(value)
     """
 
     def __new__(meta, name, bases, dct):
         arity = int(dct.pop('arity'))
-        dict_method = _dict_method(dct)
+        dict_method = _dict_method_adder(dct)
 
         @dict_method
         def __new__(cls, *values):
@@ -51,13 +61,13 @@ class Constructor(abc.ABCMeta):
             if isinstance(other, type(self)):
                 return super(type(self), self).__eq__(other)
             else:
-                return False
+                return NotImplemented
 
         bases += (tuple,)
         return super(Constructor, meta).__new__(meta, name, bases, dct)
 
 
-def _dict_method(dct):
+def _dict_method_adder(dct):
     """Decorator for adding methods to a dict."""
     def decorator(f):
         dct[f.__name__] = f

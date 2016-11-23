@@ -12,11 +12,15 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-"""Abstract base classes for mir.monads package."""
+"""Abstract base classes for mir.monads package.
+
+Classes:
+Functor -- Functor abstract base class
+Applicative -- Applicative abstract base class
+Monad -- Monad abstract base class
+"""
 
 import abc
-
-import mir.monads.fun as fun
 
 
 class Functor(abc.ABC):
@@ -71,15 +75,3 @@ class Monad(Applicative):
     def bind(self, f):
         """Apply a function to the monad."""
         raise NotImplementedError
-
-    def __rshift__(self, f):
-        return self.bind(f)
-
-
-@fun.curry
-def kleisli_compose(f: Monad, g: Monad, h):
-    """Kleisli composition operator
-
-    Denoted >=> in Haskell.
-    """
-    return f(h) >> g

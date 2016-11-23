@@ -15,9 +15,10 @@
 """Identity monad.
 
 Useful for doing something like Clojure's threading operator using fmap().
-"""
 
-import functools
+Classes:
+Identity -- Identity monad
+"""
 
 import mir.monads.abc as monads_abc
 import mir.monads.data as data

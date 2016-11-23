@@ -35,7 +35,7 @@ def test_bind_left_identity(unit, f, a):
 
     return >=> g ≡ g
     """
-    assert (unit(a) >> f) == f(a)
+    assert unit(a).bind(f) == f(a)
 
 
 @pytest.mark.parametrize('m,unit', [
@@ -46,7 +46,7 @@ def test_bind_right_identity(m, unit):
 
     f >=> return ≡ f
     """
-    assert (m >> unit) == m
+    assert m.bind(unit) == m
 
 
 @pytest.mark.parametrize('m,f,g', [
@@ -57,4 +57,4 @@ def test_bind_associativity(m, f, g):
 
     (f >=> g) >=> h ≡ f >=> (g >=> h)
     """
-    assert (m >> f >> g) == (m >> (lambda x: f(x) >> g))
+    assert m.bind(f).bind(g) == m.bind(lambda x: f(x).bind(g))
