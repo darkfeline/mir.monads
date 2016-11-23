@@ -53,7 +53,7 @@ class Applicative(Functor):
 
     @abc.abstractmethod
     def apply(self, other):
-        """Apply the applicative to another applicative."""
+        """Apply this applicative to the other applicative."""
         raise NotImplementedError
 
 
@@ -73,5 +73,5 @@ class Monad(Applicative):
 
     @abc.abstractmethod
     def bind(self, f):
-        """Apply a function to the monad."""
+        """Apply the function to the monad."""
         raise NotImplementedError
