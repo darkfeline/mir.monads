@@ -11,7 +11,7 @@ mir.monads
    :target: https://badge.fury.io/py/mir.monads
    :alt: PyPi Release
 .. image:: https://readthedocs.org/projects/mir-monads/badge/?version=latest
-   :target: http://mir-monads.readthedocs.io/en/latest/?badge=latest
-   :alt: Documentation Status
+   :target: http://mir-monads.readthedocs.io/en/latest/
+   :alt: Latest Documentation
 
-Monads for Python (and other functional goodies).
+Monads for Python.
