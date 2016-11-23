@@ -10,5 +10,8 @@ mir.monads
 .. image:: https://badge.fury.io/py/mir.monads.svg
    :target: https://badge.fury.io/py/mir.monads
    :alt: PyPi Release
+.. image:: https://readthedocs.org/projects/mir-monads/badge/?version=latest
+   :target: http://mir-monads.readthedocs.io/en/latest/?badge=latest
+   :alt: Documentation Status
 
 Monads for Python (and other functional goodies).
