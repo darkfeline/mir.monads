@@ -38,3 +38,9 @@ def test_not_eq_value():
 
 def test_not_eq_tuple():
     assert UnaryConstructor(1) != (1,)
+
+
+def test_no_slots():
+    x = UnaryConstructor(1)
+    with pytest.raises(AttributeError):
+        x.foo = 1

@@ -48,6 +48,7 @@ class Constructor(abc.ABCMeta):
 
     def __new__(meta, name, bases, dct):
         arity = int(dct.pop('arity'))
+        dct['__slots__'] = ()
         dict_method = _dict_method_adder(dct)
 
         @dict_method

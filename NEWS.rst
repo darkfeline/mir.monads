@@ -6,6 +6,11 @@ This project uses `semantic versioning <http://semver.org/>`_.
 1.0.1
 -----
 
+Fixed
+^^^^^
+
+- Data constructors no longer have a ``__dict__``.
+
 1.0.0 (2016-11-23)
 ------------------
 
