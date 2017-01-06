@@ -21,10 +21,12 @@ used to emulate Clojure's threading operator.
    def add_one(x):
        return x + 1
 
-   (Identity(1)
-    .fmap(add_one)
-    .fmap(add_one)
-    .fmap(add_one)) == 4
+   x, = (
+       Identity(1)
+       .fmap(add_one)
+       .fmap(add_one)
+       .fmap(add_one))
+    x == 4
 
     # This is equivalent to the following
     add_one(add_one(add_one(1))) == 4
